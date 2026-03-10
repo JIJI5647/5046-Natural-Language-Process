@@ -21,6 +21,13 @@ Output:
 
 """
 
+
+def cosine_distance(vector1: list[float], vector2: list[float]) -> float:
+    dot_product = sum(a * b for a, b in zip(vector1, vector2))
+    length1 = sum(a ** 2 for a in vector1) ** 0.5
+    length2 = sum(a ** 2 for a in vector2) ** 0.5
+    return dot_product / (length1 * length2)
+
 # This is the function you need to implement
 def word_analogy(vector_dictionary: list[list[float]], word1: int, word2: int, word3: int) -> tuple[float, int]:
     """Predict a word given its context.
@@ -34,8 +41,15 @@ def word_analogy(vector_dictionary: list[list[float]], word1: int, word2: int, w
     Returns:
          tuple[float, int]: A tuple containing the similarity of the closest answer and the token ID of that answer
     """
+
     # TODO
-    return 0.0, 0
+    res = [vector_dictionary[word1][i] - vector_dictionary[word2][i] + vector_dictionary[word3][i] for i in range(len(vector_dictionary[0]))]
+    
+    print(res)
+    dis_list = [cosine_distance(res, vector) for vector in vector_dictionary] 
+    for index in [word1, word2, word3]:
+        dis_list[index] = -float('inf')
+    return max(dis_list), dis_list.index(max(dis_list))
 
 if __name__ == "__main__":
     main()

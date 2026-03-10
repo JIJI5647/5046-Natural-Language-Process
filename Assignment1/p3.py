@@ -27,6 +27,8 @@ Output:
 (0, 0.3839470563421029, [0.3839470563421029, 0.2901809427631469, 0.3258720008947502])
 """
 
+from math import exp
+# This is the function you need to implement
 def predict_word_and_dist(vector_dictionary: list[list[float]], matrix: list[list[float]], words: list[int]) -> tuple[int, float, list[float]]:
     """Predict a word given its context.
 
@@ -39,7 +41,21 @@ def predict_word_and_dist(vector_dictionary: list[list[float]], matrix: list[lis
         tuple[int, float, list[float]]: A tuple containing the ID of the highest probability word, the probability of that word, and the distribution of probabilities
     """
     # TODO
-    return 0, 0.0, []
+    len_context = len(words)
+    len_vocab = len(vector_dictionary)
+    n_dim = len(vector_dictionary[0])
+    vector = [0] * n_dim
+    for i in range(n_dim):
+        vector[i] = sum(vector_dictionary[j][i] for j in words)
+    vector = [i / len_context for i in vector]
+    
+
+    dot_products = [sum(vector[j] * matrix[i][j] for j in range(n_dim)) for i in range(len_vocab)]
+
+    print(dot_products)
+
+    distribution = [exp(dot_product) / sum(exp(dot_product) for dot_product in dot_products) for dot_product in dot_products]
+    return distribution.index(max(distribution)), max(distribution), distribution
 
 
 if __name__ == "__main__":
